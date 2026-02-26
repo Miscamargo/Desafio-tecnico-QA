@@ -1,0 +1,12 @@
+{
+  "name": "desafio-tecnico-qa",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "@playwright/test": "^1.42.0",
+    "@faker-js/faker": "^8.0.0"
+  },
+  "scripts": {
+    "test": "playwright test"
+  }
+}
