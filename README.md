@@ -1,189 +1,221 @@
- 🧪 Desafio Técnico — Arquitetura de Automação de Testes | Serverest
+# 🧪 Desafio Técnico — Arquitetura de Automação de Testes | Serverest
 
-Este repositório apresenta a implementação de uma estratégia de automação estruturada para a aplicação Serverest, com cobertura em múltiplas camadas e foco em confiabilidade, previsibilidade e escalabilidade.
+Este repositório apresenta a implementação de uma estratégia de automação estruturada para a aplicação **Serverest**, com cobertura em múltiplas camadas e foco em confiabilidade, previsibilidade e escalabilidade.
 
-A solução foi desenhada para validar o fluxo crítico de cadastro de usuários, exercitando regras de negócio tanto na API quanto na interface, garantindo visão completa do comportamento da aplicação.
+A solução valida o fluxo crítico de **cadastro de usuários**, exercitando regras de negócio na API e na interface, garantindo visão completa do comportamento da aplicação.
 
-🏗 Estratégia de Testes
-A abordagem adotada segue uma distribuição alinhada à pirâmide de testes:
+---
 
-🔎 Camada de Serviço (API) → validação estrutural e regras de negócio
+# 🏗 Estratégia de Testes
 
-🌐 Camada de Interface (E2E) → validação de comportamento real do usuário
+A abordagem segue a pirâmide de testes:
 
-🐞 Registro de inconsistências → análise crítica do sistema
+- 🔎 **Camada de Serviço (API)** → validação estrutural e regras de negócio  
+- 🌐 **Camada de Interface (E2E)** → validação do comportamento do usuário  
+- 🐞 **Registro de inconsistências** → análise crítica do sistema  
 
-Essa separação permite:
+## Benefícios da separação
 
-- Diagnóstico mais rápido de falhas
-- Redução de falsos positivos
-- Baixo acoplamento entre camadas
-- Execução independente
-- Preparação para integração contínua
+- Diagnóstico mais rápido de falhas  
+- Redução de falsos positivos  
+- Baixo acoplamento entre camadas  
+- Execução independente  
+- Preparação para CI/CD  
 
-📂 Estrutura do Projeto
+---
 
+# 📂 Estrutura do Projeto
+
+```bash
 .
-├── api/               → Testes de API (Postman + Newman)
-├── web/               → Testes E2E (Playwright + TypeScript)
+├── api/
+│   ├── ServeRest.postman_collection.json
+│   └── ServerTest.postman_environment.json
+│
+├── web/
+│   ├── tests/
+│   ├── pages/
+│   ├── factories/
+│   ├── playwright.config.ts
+│   └── package.json
+│
 ├── docs/
-│   └── Bugs/          → Registro das inconsistências encontradas
+│   └── Bugs/
+│
 └── README.md
+```
 
-🚀 Camada 1 — Testes de API
+---
 
-📁 api/
+# 🚀 Camada 1 — Testes de API
+
+📁 `api/`
 
 Validação direta do endpoint:
 
+```http
 POST /usuarios
+```
 
-🎯 Objetivo
+## 🎯 Objetivo
 
 Garantir que as regras de negócio relacionadas ao cadastro estejam corretamente implementadas no serviço, isolando a validação da camada de interface.
 
-✅ Cobertura
+## ✅ Cobertura
 
-* Cadastro com dados válidos
-* E-mail duplicado
-* Campos obrigatórios
-* Formato inválido
-* Validação de status code
-* Validação da estrutura do retorno
+- Cadastro com dados válidos  
+- E-mail duplicado  
+- Campos obrigatórios  
+- Formato inválido  
+- Validação de status code  
+- Validação da estrutura do retorno  
 
-🧠 Decisões Técnicas
+## 🧠 Decisões Técnicas
 
-* Separação entre Collection e Environment
-* Scripts automatizados em JavaScript
-* Dados dinâmicos para evitar conflito entre execuções
-* Execução via Newman (CLI-ready)
-* A camada de API atua como primeiro nível de confiança do sistema.
+- Separação entre Collection e Environment  
+- Scripts automatizados em JavaScript  
+- Dados dinâmicos para evitar conflito entre execuções  
+- Execução via Newman (CLI-ready)  
+- API como primeiro nível de confiança do sistema  
 
-⚙️ Execução — API
+## ⚙️ Execução — API
 
-Instalar Newman:
+### Instalar Newman
 
+```bash
 npm install -g newman
+```
 
-Executar:
+### Executar os testes
 
+```bash
 newman run api/ServeRest.postman_collection.json \
   -e api/ServerTest.postman_environment.json
+```
 
-🧪 Camada 2 — Testes End-to-End
+---
 
-📁 web/
+# 🌐 Camada 2 — Testes End-to-End (E2E)
 
-Validação do comportamento da aplicação sob a perspectiva do usuário, exercitando interface, regras visuais e integração com o backend.
+📁 `web/`
 
-🛠 Stack Técnica
+Validação do comportamento real do usuário, exercitando interface, regras visuais e integração com o backend.
 
-* Playwright
-* TypeScript
-* Node.js
-* Page Object Model
-* Factory para geração de dados dinâmicos
+## 🛠 Stack Técnica
 
-🏗 Decisões Arquiteturais
+- Playwright  
+- TypeScript  
+- Node.js  
+- Page Object Model  
+- Factory para geração de dados dinâmicos  
 
-Playwright
+## 🏗 Decisões Arquiteturais
 
-* Web-first assertions
-* Execução paralela
-* Relatórios automáticos
-* Boa estabilidade para fluxos críticos
+### Playwright
+- Web-first assertions  
+- Execução paralela  
+- Relatórios automáticos  
+- Estabilidade para fluxos críticos  
 
-TypeScript
+### TypeScript
+- Tipagem estática  
+- Maior segurança na manutenção  
 
-* Tipagem estática
-* Maior segurança na manutenção evolutiva
+### Page Object Model
+- Centralização de locators  
+- Redução de duplicidade  
+- Baixo acoplamento  
 
-Page Object Model
+### Dados Dinâmicos
+- Independência entre execuções  
+- Redução de flakiness  
+- Execução paralela segura  
 
-* Centralização de locators
-* Redução de duplicidade
-* Baixo acoplamento entre testes e DOM
+## ⚙️ Execução — E2E
 
-Dados Dinâmicos
+### Instalar dependências
 
-* Independência entre execuções
-* Redução de flakiness
-* Execução paralela segura
-
-⚙️ Execução — E2E
-
-Instalar dependências:
-
+```bash
 cd web
 npm install
+```
 
-Instalar navegadores:
+### Instalar navegadores
 
+```bash
 npx playwright install
+```
 
-Executar testes:
+### Executar testes
 
+```bash
 npx playwright test
+```
 
-Modo interativo: 
+### Executar em modo interativo
 
+```bash
 npx playwright test --ui
+```
 
-Visualizar relatório: 
+### Visualizar relatório
 
+```bash
 npx playwright show-report
+```
 
 A suíte está preparada para execução headless, favorecendo integração em pipeline.
 
+---
 
-🐞 Registro de Inconsistências
+# 🐞 Registro de Inconsistências
 
-📁 docs/Bugs/
+📁 `docs/Bugs/`
 
-As inconsistências identificadas foram registradas separadamente para:
+As inconsistências foram registradas separadamente para:
 
-* Diferenciar falhas de API e UI
-* Evidenciar problemas de regra de negócio
-* Facilitar reprodutibilidade
-* Demonstrar análise crítica do comportamento da aplicação
+- Diferenciar falhas de API e UI  
+- Evidenciar problemas de regra de negócio  
+- Facilitar reprodutibilidade  
+- Demonstrar análise crítica da aplicação  
 
-🎯 Princípios de Engenharia Aplicados
+---
 
-* Testes independentes e idempotentes
-* Separação clara de responsabilidades
-* Execução determinística
-* Uso de dados dinâmicos
-* Baixo acoplamento
-* Estrutura preparada para CI/CD
-* Foco em comportamento real e regra de negócio
+# 🎯 Princípios de Engenharia Aplicados
+
+- Testes independentes e idempotentes  
+- Separação clara de responsabilidades  
+- Execução determinística  
+- Uso de dados dinâmicos  
+- Baixo acoplamento  
+- Estrutura preparada para CI/CD  
+- Foco em comportamento real e regra de negócio  
 
 A estratégia prioriza qualidade estrutural e confiabilidade da suíte, não apenas volume de testes.
 
-⚠️ Limitações
+---
 
-* Não contempla testes de performance
-* Não contempla testes de segurança
-* Escopo limitado ao fluxo de cadastro
+# ⚠️ Limitações
 
-🔮 Evoluções Possíveis
+- Não contempla testes de performance  
+- Não contempla testes de segurança  
+- Escopo limitado ao fluxo de cadastro  
 
-* Integração com pipeline CI/CD
-* Testes de contrato
-* Setup/teardown automatizado via API
-* Segmentação de suíte (smoke / regression)
-* Expansão para outros módulos da aplicação
+---
 
-👩‍💻 Autoria
+# 🔮 Evoluções Possíveis
 
-Michelle Camargo Analista de Qualidade de Software
+- Integração com pipeline CI/CD  
+- Testes de contrato  
+- Setup/teardown automatizado via API  
+- Segmentação de suíte (smoke / regression)  
+- Expansão para outros módulos  
+
+---
+
+# 👩‍💻 Autoria
+
+**Michelle Camargo**  
+Analista de Qualidade de Software  
 
 Atuação em testes funcionais e automatizados (Web, API e Mobile), com foco em arquitetura de automação, validação de regras de negócio e integração contínua.
-
-
-
-
-
-
-
-
-
