@@ -1,26 +1,26 @@
-# 🧪 Desafio Técnico — Arquitetura de Automação de Testes | Serverest
+# 🧪 Desafio Técnico — Arquitetura de Automação | Serverest
 
-Este repositório apresenta a implementação de uma estratégia de automação estruturada para a aplicação **Serverest**, com cobertura em múltiplas camadas e foco em confiabilidade, previsibilidade e escalabilidade.
+Este repositório apresenta a implementação de uma estratégia estruturada de automação para a aplicação **Serverest**, com cobertura em múltiplas camadas.
 
-A solução valida o fluxo crítico de **cadastro de usuários**, exercitando regras de negócio na API e na interface, garantindo visão completa do comportamento da aplicação.
+O foco está no fluxo crítico de cadastro de usuários, validando regras de negócio tanto na API quanto na interface.
 
 ---
 
 # 🏗 Estratégia de Testes
 
-A abordagem segue a pirâmide de testes:
+A arquitetura segue o modelo da pirâmide de testes:
 
-- 🔎 **Camada de Serviço (API)** → validação estrutural e regras de negócio  
-- 🌐 **Camada de Interface (E2E)** → validação do comportamento do usuário  
-- 🐞 **Registro de inconsistências** → análise crítica do sistema  
+- 🔎 API (Camada de Serviço)
+- 🌐 E2E (Camada de Interface)
+- 🐞 Registro de inconsistências
 
-## Benefícios da separação
+### Benefícios
 
-- Diagnóstico mais rápido de falhas  
-- Redução de falsos positivos  
-- Baixo acoplamento entre camadas  
-- Execução independente  
-- Preparação para CI/CD  
+- Execução independente por camada  
+- Diagnóstico rápido de falhas  
+- Redução de flakiness  
+- Baixo acoplamento  
+- Estrutura preparada para CI/CD  
 
 ---
 
@@ -28,26 +28,26 @@ A abordagem segue a pirâmide de testes:
 
 ```bash
 .
-├── api/
-│   ├── ServeRest.postman_collection.json
+├── api
+│   ├── ServerTest.postman_collection.json
 │   └── ServerTest.postman_environment.json
 │
-├── web/
-│   ├── tests/
-│   ├── pages/
-│   ├── factories/
+├── web
+│   ├── tests
+│   ├── pages
+│   ├── factories
 │   ├── playwright.config.ts
 │   └── package.json
 │
-├── docs/
-│   └── Bugs/
+├── docs
+│   └── Bugs
 │
 └── README.md
 ```
 
 ---
 
-# 🚀 Camada 1 — Testes de API
+# 🚀 1️⃣ Camada de API
 
 📁 `api/`
 
@@ -59,7 +59,9 @@ POST /usuarios
 
 ## 🎯 Objetivo
 
-Garantir que as regras de negócio relacionadas ao cadastro estejam corretamente implementadas no serviço, isolando a validação da camada de interface.
+Validar regras de negócio isoladamente da interface, garantindo que o serviço responda corretamente antes da validação E2E.
+
+---
 
 ## ✅ Cobertura
 
@@ -70,136 +72,170 @@ Garantir que as regras de negócio relacionadas ao cadastro estejam corretamente
 - Validação de status code  
 - Validação da estrutura do retorno  
 
-## 🧠 Decisões Técnicas
+---
 
-- Separação entre Collection e Environment  
-- Scripts automatizados em JavaScript  
-- Dados dinâmicos para evitar conflito entre execuções  
-- Execução via Newman (CLI-ready)  
-- API como primeiro nível de confiança do sistema  
+## 🛠 Ferramenta Utilizada
 
-## ⚙️ Execução — API
+- Postman  
+- Scripts automatizados em JavaScript (aba Tests)
 
-### Instalar Newman
+---
+
+## ⚙️ Como Executar via Postman
+
+### 1️⃣ Importar a Collection
+
+No Postman:
+
+- Clique em **Import**
+- Selecione:
 
 ```bash
-npm install -g newman
-```
-
-### Executar os testes
-
-```bash
-newman run api/ServeRest.postman_collection.json \
-  -e api/ServerTest.postman_environment.json
+api/ServerTest.postman_collection.json
 ```
 
 ---
 
-# 🌐 Camada 2 — Testes End-to-End (E2E)
+### 2️⃣ Importar o Environment
+
+- Clique em **Import**
+- Selecione:
+
+```bash
+api/ServerTest.postman_environment.json
+```
+
+- Ative o environment no canto superior direito do Postman.
+
+---
+
+### 3️⃣ Executar os testes
+
+- Abra a collection  
+- Clique em **Run Collection**
+- Execute todos os cenários  
+
+Os testes possuem validações automatizadas de status code e estrutura da resposta.
+
+---
+
+## 🧠 Decisões Técnicas
+
+- Separação entre Collection e Environment  
+- Uso de variáveis de ambiente  
+- Dados dinâmicos para evitar conflito entre execuções  
+- API validada como primeira camada de confiança  
+
+---
+
+# 🌐 2️⃣ Camada E2E (Playwright)
 
 📁 `web/`
 
-Validação do comportamento real do usuário, exercitando interface, regras visuais e integração com o backend.
+Testes que validam o comportamento real do usuário na interface, incluindo integração com backend.
 
-## 🛠 Stack Técnica
+---
+
+## 🛠 Stack Utilizada
 
 - Playwright  
 - TypeScript  
 - Node.js  
 - Page Object Model  
-- Factory para geração de dados dinâmicos  
+- Factory Pattern para geração de dados  
 
-## 🏗 Decisões Arquiteturais
+---
 
-### Playwright
-- Web-first assertions  
-- Execução paralela  
-- Relatórios automáticos  
-- Estabilidade para fluxos críticos  
+## 🏗 Padrões Aplicados
 
-### TypeScript
-- Tipagem estática  
-- Maior segurança na manutenção  
-
-### Page Object Model
+### ✔ Page Object Model
 - Centralização de locators  
+- Reutilização de ações  
 - Redução de duplicidade  
-- Baixo acoplamento  
 
-### Dados Dinâmicos
+### ✔ Factory Pattern
+- Geração de dados únicos  
 - Independência entre execuções  
-- Redução de flakiness  
 - Execução paralela segura  
 
-## ⚙️ Execução — E2E
+### ✔ Web-First Assertions
+- Uso de assertions nativas do Playwright  
+- Maior estabilidade nos testes  
 
-### Instalar dependências
+---
+
+## ⚙️ Como Executar
+
+### 1️⃣ Instalar dependências
 
 ```bash
 cd web
 npm install
 ```
 
-### Instalar navegadores
+---
+
+### 2️⃣ Instalar navegadores
 
 ```bash
 npx playwright install
 ```
 
-### Executar testes
+---
+
+### 3️⃣ Executar testes
 
 ```bash
 npx playwright test
 ```
 
-### Executar em modo interativo
+---
+
+### 4️⃣ Executar em modo interativo
 
 ```bash
 npx playwright test --ui
 ```
 
-### Visualizar relatório
+---
+
+### 5️⃣ Visualizar relatório
 
 ```bash
 npx playwright show-report
 ```
 
-A suíte está preparada para execução headless, favorecendo integração em pipeline.
-
 ---
 
-# 🐞 Registro de Inconsistências
+# 🐞 Registro de Bugs
 
 📁 `docs/Bugs/`
 
-As inconsistências foram registradas separadamente para:
+As inconsistências identificadas foram documentadas separadamente para:
 
 - Diferenciar falhas de API e UI  
 - Evidenciar problemas de regra de negócio  
-- Facilitar reprodutibilidade  
+- Facilitar reprodução  
 - Demonstrar análise crítica da aplicação  
 
 ---
 
-# 🎯 Princípios de Engenharia Aplicados
+# 🎯 Princípios Aplicados
 
-- Testes independentes e idempotentes  
-- Separação clara de responsabilidades  
+- Testes independentes  
 - Execução determinística  
-- Uso de dados dinâmicos  
+- Separação clara de responsabilidades  
+- Dados dinâmicos  
 - Baixo acoplamento  
 - Estrutura preparada para CI/CD  
-- Foco em comportamento real e regra de negócio  
-
-A estratégia prioriza qualidade estrutural e confiabilidade da suíte, não apenas volume de testes.
 
 ---
 
-# ⚠️ Limitações
+# ⚠️ Limitações do Escopo
 
 - Não contempla testes de performance  
 - Não contempla testes de segurança  
-- Escopo limitado ao fluxo de cadastro  
+- Escopo restrito ao fluxo de cadastro  
 
 ---
 
@@ -207,9 +243,9 @@ A estratégia prioriza qualidade estrutural e confiabilidade da suíte, não ape
 
 - Integração com pipeline CI/CD  
 - Testes de contrato  
-- Setup/teardown automatizado via API  
-- Segmentação de suíte (smoke / regression)  
-- Expansão para outros módulos  
+- Setup e teardown automatizados  
+- Separação da suíte (smoke / regression)  
+- Ampliação de cobertura funcional  
 
 ---
 
@@ -218,4 +254,4 @@ A estratégia prioriza qualidade estrutural e confiabilidade da suíte, não ape
 **Michelle Camargo**  
 Analista de Qualidade de Software  
 
-Atuação em testes funcionais e automatizados (Web, API e Mobile), com foco em arquitetura de automação, validação de regras de negócio e integração contínua.
+Experiência em testes Web, API e Mobile, com foco em automação, arquitetura de testes e validação de regras de negócio.
