@@ -7,6 +7,7 @@ Funcionalidade: Exceções no cadastro de usuários
     Então deve ser exibida a mensagem "Este email já está sendo usado"
 
   Cenário: Não permitir cadastro sem preencher o nome
+  
     Dado que o usuário está na tela "Cadastro de usuários"
     Quando o usuário preenche Email e Senha
     E deixa o campo Nome em branco
