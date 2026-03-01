@@ -1,8 +1,8 @@
 # 🧪 Desafio Técnico — Arquitetura de Automação | Serverest
 
-Este repositório apresenta a implementação de uma estratégia estruturada de automação para a aplicação **Serverest**, com cobertura em múltiplas camadas.
+Este repositório apresenta a implementação de uma estratégia estruturada de automação para a aplicação Serverest, com cobertura em múltiplas camadas.
 
-O foco está no fluxo crítico de cadastro de usuários, validando regras de negócio tanto na API quanto na interface.
+O foco está no fluxo crítico de cadastro de usuários, validando regras de negócio na API e na interface.
 
 ---
 
@@ -10,37 +10,36 @@ O foco está no fluxo crítico de cadastro de usuários, validando regras de neg
 
 A arquitetura segue o modelo da pirâmide de testes:
 
-- 🔎 API (Camada de Serviço)
-- 🌐 E2E (Camada de Interface)
+- 🔎 API (Validação de serviço)
+- 🌐 E2E (Validação de interface)
 - 🐞 Registro de inconsistências
-
-### Benefícios
-
-- Execução independente por camada  
-- Diagnóstico rápido de falhas  
-- Redução de flakiness  
-- Baixo acoplamento  
-- Estrutura preparada para CI/CD  
 
 ---
 
-# 📂 Estrutura do Projeto
+# 📂 Estrutura Atual do Projeto
 
 ```bash
 .
 ├── api
+│   ├── Features
+│   │   └── cadastro-usuario.feature
 │   ├── ServerTest.postman_collection.json
 │   └── ServerTest.postman_environment.json
 │
-├── web
-│   ├── tests
-│   ├── pages
-│   ├── factories
-│   ├── playwright.config.ts
-│   └── package.json
-│
 ├── docs
-│   └── Bugs
+│
+├── web
+│   ├── features
+│   ├── pages
+│   │   └── CadastroPage.ts
+│   ├── tests
+│   ├── utils
+│   ├── playwright-report
+│   ├── test-results
+│   │   └── .last-run.json
+│   ├── package.json
+│   ├── package-lock.json
+│   └── playwright.config.ts
 │
 └── README.md
 ```
@@ -57,27 +56,33 @@ Validação direta do endpoint:
 POST /usuarios
 ```
 
-## 🎯 Objetivo
-
-Validar regras de negócio isoladamente da interface, garantindo que o serviço responda corretamente antes da validação E2E.
-
 ---
 
-## ✅ Cobertura
+## 📘 Documentação BDD
 
-- Cadastro com dados válidos  
+📁 `api/Features/`
+
+Contém o arquivo:
+
+```bash
+cadastro-usuario.feature
+```
+
+Este arquivo descreve os cenários de teste em formato Gherkin, documentando:
+
+- Caminho feliz  
 - E-mail duplicado  
-- Campos obrigatórios  
-- Formato inválido  
-- Validação de status code  
-- Validação da estrutura do retorno  
+- Validações de campos obrigatórios  
+- Regras de negócio  
+
+A feature atua como documentação viva das regras da API.
 
 ---
 
 ## 🛠 Ferramenta Utilizada
 
 - Postman  
-- Scripts automatizados em JavaScript (aba Tests)
+- Scripts de validação em JavaScript (aba Tests)  
 
 ---
 
@@ -112,18 +117,19 @@ api/ServerTest.postman_environment.json
 ### 3️⃣ Executar os testes
 
 - Abra a collection  
-- Clique em **Run Collection**
+- Clique em **Run Collection**  
 - Execute todos os cenários  
 
-Os testes possuem validações automatizadas de status code e estrutura da resposta.
+Os testes validam status code e estrutura do retorno automaticamente.
 
 ---
 
-## 🧠 Decisões Técnicas
+## 🧠 Decisões Técnicas — API
 
 - Separação entre Collection e Environment  
 - Uso de variáveis de ambiente  
 - Dados dinâmicos para evitar conflito entre execuções  
+- Documentação BDD separada da implementação técnica  
 - API validada como primeira camada de confiança  
 
 ---
@@ -132,7 +138,7 @@ Os testes possuem validações automatizadas de status code e estrutura da respo
 
 📁 `web/`
 
-Testes que validam o comportamento real do usuário na interface, incluindo integração com backend.
+Testes que validam o comportamento real do usuário na interface.
 
 ---
 
@@ -142,25 +148,18 @@ Testes que validam o comportamento real do usuário na interface, incluindo inte
 - TypeScript  
 - Node.js  
 - Page Object Model  
-- Factory Pattern para geração de dados  
+- Factory Pattern  
 
 ---
 
-## 🏗 Padrões Aplicados
+## 🏗 Organização da Camada Web
 
-### ✔ Page Object Model
-- Centralização de locators  
-- Reutilização de ações  
-- Redução de duplicidade  
-
-### ✔ Factory Pattern
-- Geração de dados únicos  
-- Independência entre execuções  
-- Execução paralela segura  
-
-### ✔ Web-First Assertions
-- Uso de assertions nativas do Playwright  
-- Maior estabilidade nos testes  
+- `pages/` → Page Objects  
+- `tests/` → Cenários automatizados  
+- `features/` → Documentação BDD da camada Web  
+- `utils/` → Funções auxiliares  
+- `playwright-report/` → Relatórios gerados  
+- `test-results/` → Resultados de execução  
 
 ---
 
@@ -173,15 +172,11 @@ cd web
 npm install
 ```
 
----
-
 ### 2️⃣ Instalar navegadores
 
 ```bash
 npx playwright install
 ```
-
----
 
 ### 3️⃣ Executar testes
 
@@ -189,15 +184,11 @@ npx playwright install
 npx playwright test
 ```
 
----
-
-### 4️⃣ Executar em modo interativo
+### 4️⃣ Executar modo interativo
 
 ```bash
 npx playwright test --ui
 ```
-
----
 
 ### 5️⃣ Visualizar relatório
 
@@ -209,13 +200,12 @@ npx playwright show-report
 
 # 🐞 Registro de Bugs
 
-📁 `docs/Bugs/`
+📁 `docs/`
 
-As inconsistências identificadas foram documentadas separadamente para:
+As inconsistências identificadas foram registradas separadamente para:
 
 - Diferenciar falhas de API e UI  
-- Evidenciar problemas de regra de negócio  
-- Facilitar reprodução  
+- Evidenciar inconsistências de regra de negócio  
 - Demonstrar análise crítica da aplicação  
 
 ---
@@ -225,7 +215,7 @@ As inconsistências identificadas foram documentadas separadamente para:
 - Testes independentes  
 - Execução determinística  
 - Separação clara de responsabilidades  
-- Dados dinâmicos  
+- Documentação viva com BDD  
 - Baixo acoplamento  
 - Estrutura preparada para CI/CD  
 
@@ -239,19 +229,9 @@ As inconsistências identificadas foram documentadas separadamente para:
 
 ---
 
-# 🔮 Evoluções Possíveis
-
-- Integração com pipeline CI/CD  
-- Testes de contrato  
-- Setup e teardown automatizados  
-- Separação da suíte (smoke / regression)  
-- Ampliação de cobertura funcional  
-
----
-
 # 👩‍💻 Autoria
 
-**Michelle Camargo**  
+Michelle Camargo  
 Analista de Qualidade de Software  
 
 Experiência em testes Web, API e Mobile, com foco em automação, arquitetura de testes e validação de regras de negócio.
